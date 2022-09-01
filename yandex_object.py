@@ -1,9 +1,9 @@
-from page_object import Page_Object
+from page_object import PageObject
 
 from constants import yandex_link, adv_close
 
 
-class Yandex_Object(Page_Object):
+class YandexObject(PageObject):
 
     def main_page(self):
 
@@ -17,12 +17,13 @@ class Yandex_Object(Page_Object):
         '''Сравнивает первую ссылку из результатов поиска с искомой ссылкой'''
 
         result_link = self.get_first_link(selector)
-        assert result_link == link
+        self.check_equality(result_link, link)
 
     def link_to_new_window(self, selector):
 
         '''Кликает по ссылке, переходит на новую вкладку'''
 
+        self.loading(selector)
         self.click_option(selector)
         self.switch_to_new_window()
 
@@ -33,12 +34,19 @@ class Yandex_Object(Page_Object):
         current_url = self.get_current_url()
         assert current_url.startswith(url)
 
-    def check_category_name(self, category, link, input):
+    def check_category_name(self, category, link, input_content):
 
         '''Получает имя первой категории, переходит по ссылке первой категории, проверяет, что название категории отображается в
         поле поиска'''
 
         category_name = self.get_category_name(category)
         self.go_to_first_link(link)
-        input_value = self.get_search_info(input)
-        assert input_value == category_name
+        input_value = self.get_search_info(input_content)
+        self.check_equality(input_value, category_name)
+
+    def change_image(self, selector):
+
+        '''Кликает по кнопке "вперед" или "назад". Значение кнопки передается по селектору'''
+
+        self.hover_to_item(selector)
+        self.click_option(selector)

@@ -1,33 +1,34 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-import time
+from selenium.webdriver.common.action_chains import ActionChains as AC
 
 
-class Page_Object():
+class PageObject:
 
     def __init__(self, driver):
         self.driver = driver
 
     def go_to(self, link):
 
-        """Переходит по указанной ссылке"""
+        '''Переходит по указанной ссылке'''
 
         self.driver.get(link)
 
     def loading(self, selector):
 
-        """Ожидание загрузки указанного элемента на странице"""
+        '''Ожидание загрузки указанного элемента на странице'''
 
         wait = WebDriverWait(self.driver, 50)
         wait.until(EC.visibility_of_element_located(selector))
 
-    def search_field_input(self, search_field, input):
+    def search_field_input(self, search_field, input_content):
 
-        """Находит поисковую строку, вводит запрос"""
+        '''Находит поисковую строку, вводит запрос'''
 
+        self.loading(search_field)
         search = self.driver.find_element(*search_field)
-        search.send_keys(input)
+        search.send_keys(input_content)
 
     def press_enter(self, search_field):
 
@@ -38,7 +39,7 @@ class Page_Object():
 
     def click_option(self, selector):
 
-        """Ищет элемент и кликает по нему"""
+        '''Ищет элемент и кликает по нему'''
 
         self.loading(selector)
         self.driver.find_element(*selector).click()
@@ -53,7 +54,6 @@ class Page_Object():
 
         '''Возвращает url текущей страницы'''
 
-        time.sleep(5)
         return self.driver.current_url
 
     def go_to_first_link(self, selector):
@@ -68,25 +68,26 @@ class Page_Object():
 
         '''Возвращает значение искомого атрибута элемента'''
 
+        self.loading(selector)
         return self.driver.find_element(*selector).get_attribute(attr)
 
     def get_first_link(self, selector):
 
-        """Возвращает ссылку из первого элемента в списке"""
+        '''Возвращает ссылку из первого элемента в списке'''
 
-        self.get_attribute(selector, 'href')
+        return self.get_attribute(selector, 'href')
 
     def get_search_info(self, selector):
 
         '''Получает текст из поля поиска'''
 
-        self.get_attribute(selector, 'value')
+        return self.get_attribute(selector, 'value')
 
     def get_category_name(self, selector):
 
         '''Возвращает назнание первой категории'''
 
-        self.get_attribute(selector, 'data-grid-text')
+        return self.get_attribute(selector, 'data-grid-text')
 
     def get_image_src(self, selector):
 
@@ -94,8 +95,22 @@ class Page_Object():
 
         return self.get_attribute(selector, 'src')
 
+    def check_equality(self, item1, item2):
 
+        '''Проверяет равенство значений двух объектов'''
 
+        assert item1 == item2
 
+    def check_difference(self, item1, item2):
 
+        '''Проверяет неравенство значений двух объектов'''
 
+        assert item1 != item2
+
+    def hover_to_item(self, selector):
+
+        '''Помещает курсор мыши на указанном элементе'''
+
+        item = self.driver.find_element(*selector)
+        hover = AC(self.driver).move_to_element(item)
+        hover.perform()
