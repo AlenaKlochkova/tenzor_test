@@ -10,7 +10,15 @@ class YandexObject(PageObject):
         '''Открывает главную страницу, закрывает всплывающее окно'''
 
         self.go_to(yandex_link)
-        self.click_option(adv_close)
+        self.adv_handler(adv_close)
+
+    def adv_handler(self, selector):
+
+        '''Ищет всплывающее рекламное окно, если находит - закрывает'''
+
+        adv = self.driver.find_elements(*selector)
+        if adv:
+            self.click_option(adv_close)
 
     def check_link(self, selector, link):
 
@@ -23,7 +31,7 @@ class YandexObject(PageObject):
 
         '''Кликает по ссылке, переходит на новую вкладку'''
 
-        self.loading(selector)
+        self.loading_clickable(selector)
         self.click_option(selector)
         self.switch_to_new_window()
 

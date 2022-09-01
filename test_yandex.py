@@ -16,9 +16,9 @@ def test_one(browser):
     yandex = YandexObject(browser)
     yandex.main_page()
     yandex.search_field_input(yandex_search_field, 'Тензор')
-    yandex.loading(suggest)
+    yandex.loading_visibility(suggest)
     yandex.press_enter(yandex_search_field)
-    yandex.loading(result_table)
+    yandex.loading_visibility(result_table)
     yandex.check_link(result_link_list, tensor_link)
 
 
@@ -26,7 +26,7 @@ def test_two(browser):
     yandex = YandexObject(browser)
     yandex.main_page()
     yandex.link_to_new_window(pictures_link)
-    yandex.loading(pictures_category)
+    yandex.loading_visibility(pictures_category)
     yandex.check_url(pictures_url)
     yandex.check_category_name(pictures_category, pictures_category_link, pictures_search_field)
     yandex.go_to_first_link(image_link)

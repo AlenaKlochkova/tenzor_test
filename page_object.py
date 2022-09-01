@@ -15,18 +15,25 @@ class PageObject:
 
         self.driver.get(link)
 
-    def loading(self, selector):
+    def loading_visibility(self, selector):
 
         '''Ожидание загрузки указанного элемента на странице'''
 
         wait = WebDriverWait(self.driver, 50)
         wait.until(EC.visibility_of_element_located(selector))
 
+    def loading_clickable(self, selector):
+
+        '''Ожидает, когда указанный элемент станет доступным для клика по нему'''
+
+        wait = WebDriverWait(self.driver, 50)
+        wait.until(EC.element_to_be_clickable(selector))
+
     def search_field_input(self, search_field, input_content):
 
         '''Находит поисковую строку, вводит запрос'''
 
-        self.loading(search_field)
+        self.loading_visibility(search_field)
         search = self.driver.find_element(*search_field)
         search.send_keys(input_content)
 
@@ -41,7 +48,7 @@ class PageObject:
 
         '''Ищет элемент и кликает по нему'''
 
-        self.loading(selector)
+        self.loading_visibility(selector)
         self.driver.find_element(*selector).click()
 
     def switch_to_new_window(self):
@@ -60,7 +67,7 @@ class PageObject:
 
         '''Переходит по первой ссылке в списке'''
 
-        self.loading(selector)
+        self.loading_visibility(selector)
         link = self.driver.find_elements(*selector)[0]
         link.click()
 
@@ -68,7 +75,7 @@ class PageObject:
 
         '''Возвращает значение искомого атрибута элемента'''
 
-        self.loading(selector)
+        self.loading_visibility(selector)
         return self.driver.find_element(*selector).get_attribute(attr)
 
     def get_first_link(self, selector):
